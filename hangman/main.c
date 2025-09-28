@@ -2,13 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
+
+void setMode(int mode);
+
+void playingHangman(int round, char player[10], char answer[10]);
 
 int main(void)
 {
     srand(time(NULL));
-    char player[7] = "";
+    char player[10] = "";
     int round = 0;
-
+    int mode = 0;
+    bool start = true;
+    char **words = NULL;
     char *volcab[3][50] =
         {{"cat", "dog", "sun", "hat", "book", "fish", "tree", "ball", "star", "cake",
           "pen", "cup", "car", "milk", "bird", "frog", "lion", "tiger", "bear", "duck",
@@ -36,8 +43,6 @@ int main(void)
           "Exile", "Riddle", "Sorcery", "Talisman", "Cipher",
           "Falcon", "Pharaoh", "Labyrinth", "Gargoyle", "Specter"}};
 
-    int mode = 0;
-
     do
     {
         printf("Hi! Please select mode \n1)Easy \n2)Medium \n3) Hard\n-1) Exit \n");
@@ -46,16 +51,20 @@ int main(void)
             return 1;
     } while (mode > 3 || mode < 1);
 
-    char **words;
-
     words = volcab[mode - 1];
 
     int random = rand() % 50;
-    char answer[7];
+    char answer[10];
     strcpy(answer, words[random]);
 
-    printf("%s \n", answer);
+    printf("%s \n", answer); // for debug
 
+    playingHangman(round, player, answer);
+};
+
+// TODO: handle case sensitive
+void playingHangman(int round, char player[10], char answer[10])
+{
     while (round < 5)
     {
 
@@ -64,7 +73,7 @@ int main(void)
         printf("Guess Word : ");
         scanf("%s", player);
 
-        if (strcmp(player, answer) == 0)
+        if (strcasecmp(player, answer) == 0)
         {
             printf("You WON the answer is %s", answer);
             break;
@@ -72,13 +81,22 @@ int main(void)
 
         for (int i = 0; i < strlen(answer); i++)
         {
+            if (player[i] < 96)
+            {
+                player[i] += 32;
+            }
+            if (answer[i] < 96)
+            {
+                answer[i] += 32;
+            }
+
             resultFromPlayer[i] = player[i] == answer[i] ? player[i] : '_';
         }
 
-        printf("result : %s\n", resultFromPlayer);
+                printf("result : %s\n", resultFromPlayer);
 
         if (round == 4)
             printf("You LOOSE the answer is %s\n", answer);
         round++;
     }
-};
+}
