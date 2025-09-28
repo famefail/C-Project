@@ -7,7 +7,7 @@ int playing(int player, int bot);
 int main(void)
 {
     int player;
-    printf("0=rock 1=scissor 2=paper -1 =Exit\n");
+    printf("0)rock \n1) scissor\n2) paper\n-1 =Exit\n");
     do
     {
 
