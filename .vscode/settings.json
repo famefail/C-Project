@@ -1,0 +1,8 @@
+{
+    "conventionalCommits.scopes": [
+        "hangman"
+    ],
+    "files.associations": {
+        "stdio.h": "c"
+    }
+}
