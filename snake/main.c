@@ -5,32 +5,42 @@
 #define ROWS 10
 #define COLS 10
 #define SHORTCUT 16
+#define MAX 30
 // TODO
 // 1 create board (done)
 // 2 add player in board (done)
 // 3 add toss system (done)
-// 4 add snake and ladder (done)
+// 4 add shortcut and ladder (done)
+// create push method explan then use with snake/ladder
 // 5 add player two (to do)
 
-void printBoard(int board[ROWS][COLS], int player);
+void printBoard(int board[ROWS][COLS], int player, int shortcut[2][SHORTCUT], int size);
 
 void mapBoard(int board[ROWS][COLS]);
 
-void checkLadderOrSnake(int *player, int snake[2][SHORTCUT]);
+void checkLadderOrSnake(int *player, int shortcut[2][SHORTCUT], int size);
+
+typedef struct Stack
+{
+    int data[MAX];
+    int top;
+} Stack;
 
 int main(void)
 {
     srand(time(NULL));
 
     int player = 1;
+    int playerTwo = 1;
     int board[ROWS][COLS];
     char choice = 'y';
 
     mapBoard(board);
-    int snake[2][SHORTCUT] = {
+    int shortcut[2][SHORTCUT] = {
         {1, 4, 9, 17, 21, 28, 51, 54, 62, 64, 71, 80, 87, 93, 95, 98},
         {38, 14, 31, 7, 42, 84, 67, 34, 19, 60, 91, 100, 24, 73, 75, 79}};
-    printBoard(board, player);
+    int shortcutSize = sizeof(shortcut[0]) / sizeof(shortcut[0][0]);
+    printBoard(board, player, shortcut, shortcutSize);
     while (player < 100)
     {
 
@@ -40,22 +50,22 @@ int main(void)
         printf("your dice is : %i\n", dice);
         player += dice;
         printf("player score is : %i\n", player);
-        checkLadderOrSnake(&player, snake);
-        printBoard(board, player);
+        checkLadderOrSnake(&player, shortcut, shortcutSize);
+        printBoard(board, player, shortcut, shortcutSize);
     }
 }
 
-void checkLadderOrSnake(int *player, int snake[2][SHORTCUT])
+void checkLadderOrSnake(int *player, int shortcut[2][SHORTCUT], int size)
 {
-    int size = sizeof(snake[0]) / sizeof(snake[0][0]);
+
     for (int i = 0; i < size; i++)
     {
-        if (snake[0][i] == *player)
+        if (shortcut[0][i] == *player)
         {
-            snake[0][i] < snake[1][i]
-                ? printf("player climb ladder at %d to %d\n", snake[0][i], snake[1][i])
-                : printf("player eaten by snake at %d to %d\n", snake[0][i], snake[1][i]);
-            *player = snake[1][i];
+            shortcut[0][i] < shortcut[1][i]
+                ? printf("player climb ladder at %d to %d\n", shortcut[0][i], shortcut[1][i])
+                : printf("player eaten by snake at %d to %d\n", shortcut[0][i], shortcut[1][i]);
+            *player = shortcut[1][i];
             return;
         }
     }
@@ -81,8 +91,10 @@ void mapBoard(int board[ROWS][COLS])
     }
 }
 
-void printBoard(int board[ROWS][COLS], int player)
+void printBoard(int board[ROWS][COLS], int player, int shortcut[2][SHORTCUT], int size)
 {
+    char *snake[30];
+    char *ladder[20];
     printf("============SNAKE & LADDER ============\n");
     for (int i = 9; i >= 0; i--)
     {
@@ -99,5 +111,39 @@ void printBoard(int board[ROWS][COLS], int player)
         }
         printf("\n");
     }
+    printf("\n");
+    for (int i = 0; i < size; i++)
+    {
+        int start = shortcut[0][i];
+        int end = shortcut[1][i];
+        if (start < end)
+        {
+            snake[0] = malloc(15 * sizeof(char));
+            int snakeSize = sizeof(snake) / sizeof(snake[0]);
+            // printf("ladder %i -> %i\n", start, end);
+            sprintf(snake[0], "ladder %d -> %d\n", start, end);
+        }
+        else
+        {
+            // printf("snake %i -> %i\n", start, end);
+        }
+    }
+
+    int snakeSize = sizeof(snake) / sizeof(snake[0]);
+    if (snake)
+        printf("%s\n", snake[0]);
     printf("=======================================\n");
+}
+
+void push(Stack *s,int value)
+{
+    if (s->top > MAX)
+    {
+        printf("Stack overflow");
+    }
+    else
+    {
+     s->top++;
+     s->data[s->top] = value;   
+    }
 }
