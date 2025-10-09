@@ -1,5 +1,9 @@
 {
     "conventionalCommits.scopes": [
-        "snake-ladder"
-    ]
+        "snake-ladder",
+         "hangman"       
+    ],
+    "files.associations": {
+        "stdio.h": "c"
+    }
 }

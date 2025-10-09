@@ -1,0 +1,53 @@
+Pointer
+    - Can type can be as long or short as it wants because it will find the address of value;
+Break = escape from loop
+return = escape from function 
+
+malloc = store memory
+free = release done memory
+
+
+_____________
+|   heap    |
+|    l      |
+|    v      |
+|           |
+|    ^      |
+|    l      |
+|   stack   |
+_____________
+
+pointer is like a treasure for travel in to memomy I want to update like plus minus ...
+example
+
+    int originNum = 0; we should always assign initial value if not do it become a garbage
+    increase(int *num)
+    {
+        int += 1;
+    }
+    increase(&originNum) send address of num for increase
+    result is 1
+
+    workflow look like
+
+    originNum -> num
+
+===============================================================================================================================
+
+Data Structure 
+
+Stack = like a stack game example email 
+
+global =  variable should CAP TEXT!!
+
+malloc = it's mean allocate memory
+
+allocate = growth or reduce size of malloc 
+
+linked list node connect to next node 16bytes
+
+tree    like a linked list but have a left/right node
+
+hashmap merge linked list with array
+
+tries map b alphabet 1 aphabet 8 byte

@@ -6,9 +6,14 @@
 
 // TODO: Replay game (done)
 // store user score (done)
-void playingHangman(int round, char player[10], char answer[10], int* score, char save[3], FILE *fptr);
+// loose game loose score (doing)
+void playingHangman(int round, char player[10], char answer[10], int *score, char save[3], FILE *fptr);
 
 void winScore(int *score, char save[3], FILE *fptr);
+
+void loseScore(int *score, char save[3], FILE *fptr);
+
+void saveScore(char save[3], FILE *fptr);
 
 int main(void)
 {
@@ -59,12 +64,12 @@ int main(void)
         printf("score : %d\n", score);
         fclose(fptr);
     }
-  
+
     do
     {
         do
         {
-            printf("Please select mode \n1)Easy \n2)Medium \n3) Hard\n-1 Exit \n");
+            printf("Please select mode \n1) Easy \n2) Medium \n3) Hard\n-1 Exit \n");
             scanf("%i", &mode);
             if (mode == -1)
                 return 1;
@@ -76,6 +81,8 @@ int main(void)
         char answer[10];
         strcpy(answer, words[random]);
 
+        printf("answer is: %s\n", answer);
+
         playingHangman(round, player, answer, &score, save, fptr);
         printf("replay (y/n) :");
         scanf("%s", &start);
@@ -83,28 +90,40 @@ int main(void)
     } while (strcmp(start, "y") == 0);
 };
 
-void winScore(int* score, char save[3], FILE *fptr)
-{
-    *score += 3;
-    sprintf(save, "%d", *score);
-}
-
-void saveScore(int *score, char save[3], FILE *fptr)
+void winScore(int *score, char save[3], FILE *fptr)
 {
     if (*score == 999)
     {
         printf("you are highest score of this game \n");
         return;
     }
-    fptr = fopen("score.txt", "w");
+    *score += 3;
+    sprintf(save, "%d", *score);
+    saveScore(save, fptr);
+    printf("Your score is: %i\n", *score);
+}
 
+void loseScore(int *score, char save[3], FILE *fptr)
+{
+    if (*score == 0)
+    {
+        printf("you are lowest score of this game \n");
+        return;
+    }
+    *score -= 1;
+    sprintf(save, "%d", *score);
+    saveScore(save, fptr);
+    printf("Your score is: %i\n", *score);
+}
+
+void saveScore(char save[3], FILE *fptr)
+{
+
+    fptr = fopen("score.txt", "w");
     if (fptr != NULL)
     {
-        printf("File is open\n");
-        winScore(score, save, fptr);
         fputs(save, fptr);
         fclose(fptr);
-        printf("Your score is :%i\n", *score);
     }
     else
     {
@@ -125,7 +144,7 @@ void playingHangman(int round, char player[10], char answer[10], int *score, cha
         if (strcasecmp(player, answer) == 0)
         {
             printf("You WON the answer is %s\n", answer);
-            saveScore(score, save, fptr);
+            winScore(score, save, fptr);
             break;
         }
 
@@ -146,7 +165,10 @@ void playingHangman(int round, char player[10], char answer[10], int *score, cha
         printf("result : %s\n", resultFromPlayer);
 
         if (round == 4)
+        {
             printf("You LOOSE the answer is %s\n", answer);
+            loseScore(score, save, fptr);
+        }
         round++;
     }
 }
