@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <conio.h>
 
 #define ROWS 25
 #define COLS 25
@@ -11,46 +12,83 @@
 
 void mapBoard(int board[ROWS][COLS]);
 
-void drawBoard(int board[ROWS][COLS], int *player);
+void drawBoard(int board[ROWS][COLS], int *player, int *fruit);
 
 void updateCell(int map[11][26], int row, int col, int value);
+
+void moveSnake(char *input, int *player);
+
+void randomFruit(int *fruit);
+
+void eatingFruit(int *player, int *fruit);
 
 void timer();
 
 int main(void)
 {
+    srand(time(NULL));
     time_t start_time;
     int map[ROWS][COLS];
-    int player = 33;
+    int player = 503;
     int sizeMap = sizeof(map[0]) / sizeof(map[0][0]);
     int count = 0;
+    char input = 115;
+    int fruit = 0;
     mapBoard(map);
     printf("=============== SNAKE ==================\n\n");
-    while (1)
+    do
     {
-        char input = 119;
-        switch (input)
-        {
-        case 100: // d
-            player++;
-            break;
-        case 119: // w
-            player = player + 25;
-            break;
-        case 97: // a
-            player--;
-            break;
-        case 115: // s
-            player = 25 - player;
-        default:
-            break;
-        }
-
-        drawBoard(map, &player);
-
+        moveSnake(&input, &player);
+        randomFruit(&fruit); 
+        eatingFruit(&player, &fruit);
+        drawBoard(map, &player, &fruit);
+       
         timer();
-    }
+    } while (1);
     printf("=======================================\n");
+}
+
+void eatingFruit(int *player, int *fruit)
+{
+    if(*player == *fruit){
+        *fruit = 0;
+        printf("eating\n");
+    }
+}
+
+void randomFruit(int *fruit)
+{
+    while ((*fruit % 25 == 1 || *fruit % 25 == 0) && *fruit == 0)
+    {
+        *fruit = (rand() % 624) + 10;
+        printf("loop %i\n", *fruit);
+    };
+}
+
+void moveSnake(char *input, int *player)
+{
+    if (_kbhit())
+    {
+        char temp = _getch();
+        *input = temp;
+    }
+
+    switch (*input)
+    {
+    case 100: // d
+        *player = *player + 1;
+        break;
+    case 119: // w
+        *player = *player + 25;
+        break;
+    case 97: // a
+        *player = *player - 1;
+        break;
+    case 115: // s
+        *player = *player - 25;
+    default:
+        break;
+    }
 }
 
 void updateCell(int map[11][26], int row, int col, int value)
@@ -65,24 +103,25 @@ void mapBoard(int board[ROWS][COLS])
     {
         for (int j = 1; j <= ROWS; j++)
         {
-            board[i][j - 1] = j + (i * ROWS); // 1 + 0 * 10 = 2
+            board[i][j - 1] = j + (i * ROWS);
         }
     }
 }
 
-void drawBoard(int board[ROWS][COLS], int *player)
+void drawBoard(int board[ROWS][COLS], int *player, int *fruit)
 {
     for (int i = ROWS; i >= 0; i--)
     {
         for (int j = 0; j < COLS; j++)
-        {
+        {  
             if (*player < ROWS + 1 || *player > 625)
                 return;
+            else if (*fruit == board[i][j])
+                printf("@");
             else if (*player == board[i][j])
                 printf("O");
             else if (i == 0 || i == ROWS || j == COLS - 1 || j == 0)
                 printf("#");
-            // printf("%3d ", board[i][j]);
             else
                 printf(" ");
 
