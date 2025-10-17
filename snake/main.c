@@ -8,7 +8,10 @@
 
 // TODO
 // create board (done)
-// add snake
+// add snake (done)
+// add fruit (done)
+// random fruit (done)
+// when eat growth up
 
 void mapBoard(int board[ROWS][COLS]);
 
@@ -24,12 +27,17 @@ void eatingFruit(int *player, int *fruit);
 
 void timer();
 
+struct stack {
+    int val;
+    
+} stack;
+
 int main(void)
 {
     srand(time(NULL));
     time_t start_time;
     int map[ROWS][COLS];
-    int player = 503;
+    int player = (rand() % 624) + 10;
     int sizeMap = sizeof(map[0]) / sizeof(map[0][0]);
     int count = 0;
     char input = 115;
@@ -41,6 +49,8 @@ int main(void)
         moveSnake(&input, &player);
         randomFruit(&fruit); 
         eatingFruit(&player, &fruit);
+        if(fruit == 0)
+            randomFruit(&fruit);
         drawBoard(map, &player, &fruit);
        
         timer();
